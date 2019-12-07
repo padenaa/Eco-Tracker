@@ -1,0 +1,269 @@
+import java.util.*;
+import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+/*
+ * Names: Grace, Padena, Olivia
+ * Date: Dec. 7, 2019
+ * Project: MLH Local Hack Day: Solving Climate Change
+ */
+public class MainProgram extends JFrame implements ActionListener{
+	static Scanner sc = new Scanner(System.in);
+	static final Color light_green = new Color(164, 228, 185); //light green
+	static final Color dark_green = new Color(61, 193, 70); //dark green
+	//initialize all label stuff or whatever
+	static ArrayList<String> array = new ArrayList<String>();
+	String[] foodArray = {"apple", "avocado", "banana", "beans", "beef", "berries and grape", "bread", "cheese", "chicken", "citrous fruit", "egg", "lamb", "pasta", "peas", "pork", "potatoes", "rice", "tomatoes"};
+	JPanel jp1, jp2, jp1a, jp1b, jp3;
+	JButton OKButton, stopButton;
+	JComboBox foods;
+	boolean stopPressed = false;
+	static String[] categories = new String[18];
+	static int[] CarbonEmission = new int[18];
+	static String[] results = new String[3];
+	
+	public MainProgram() {
+		JTabbedPane jtp = new JTabbedPane();
+        getContentPane().add(jtp);
+        
+        jp1 = new JPanel();
+        BoxLayout layout1 = new BoxLayout(jp1, BoxLayout.Y_AXIS);
+        jp1.setBackground(light_green);
+        jp2 = new JPanel();
+        jp2.setBackground(light_green);
+        jp3 = new JPanel();
+        jp3.setBackground(light_green);
+       
+        JLabel label1 = new JLabel();
+        label1.setText("What did you eat today?");
+        label1.setFont(new Font("Times new roman", Font.PLAIN, 25));
+        JLabel label2 = new JLabel();
+        label2.setText("Tracker");
+        label2.setFont(new Font("Times new roman", Font.BOLD, 25));
+        JLabel label3 = new JLabel();
+        label3.setText("Suggestions");
+        label3.setFont(new Font("Times new roman", Font.BOLD, 25));
+        
+       
+        jtp.addTab("HOME", jp1);
+        jtp.addTab("TRACKER", jp2);
+        jtp.addTab("SUGGESTIONS", jp3);
+        jtp.setFont(new Font("arial", Font.BOLD, 20));
+        jtp.setBackground(dark_green);
+        
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        //HOME TAB
+        
+        //Create the combo box, select item at index 4.
+        //Indices start at 0, so 4 specifies the pig.
+        foods = new JComboBox(foodArray);
+        foods.setFont(new Font("arial", Font.PLAIN, 20));
+        
+        for (int i=0; i < foodArray.length; i++) {
+        	foods.setSelectedIndex(i);
+            foods.addActionListener(this);
+        }
+        
+        OKButton = new JButton("OK");
+        JLabel enterMore = new JLabel("press stop to stop entering foods");
+        enterMore.setFont(new Font("times new roman", Font.PLAIN, 25));
+        stopButton = new JButton("STOP");
+        jp1a = new JPanel();
+        jp1a.setBackground(light_green);
+        jp1b = new JPanel();
+        JPanel jp10 = new JPanel();
+        JLabel welcome = new JLabel("Welcome to Eco Tracker!");
+        welcome.setFont(new Font("times new roman", Font.BOLD, 25));
+        jp10.add(welcome);
+        jp10.setBackground(light_green);
+        
+        jp1b.setBackground(light_green);
+        jp1a.add(label1);
+        jp1a.add(foods);
+        jp1a.add(OKButton);
+        jp1b.add(enterMore);
+        jp1b.add(stopButton);
+        jp1.add(jp10);
+        jp1.add(jp1a);
+        jp1.add(jp1b);
+        jp1.setLayout(layout1);
+        
+        //add action listeners
+        OKButton.addActionListener(this);
+        foods.addActionListener(this);
+        stopButton.addActionListener(this);
+        
+        //TRACKER TAB
+        BoxLayout layout2 = new BoxLayout(jp2, BoxLayout.Y_AXIS);
+        jp2.setLayout(layout2);
+        jp2.add(label2);
+        
+        
+        jp3.add(label3);
+        //SUGGESTIONS TAB
+        ImageIcon icon = new ImageIcon("proteins.png");
+        JLabel label = new JLabel(icon);
+        
+        JLabel titl = new JLabel("General Tips:");
+        titl.setFont(new Font("times new roman", Font.BOLD, 20));
+        JLabel suggest = new JLabel("1. eat smaller portions");
+        JLabel suggest2 = new JLabel("2. eat less meat");
+        
+        BoxLayout layout3 = new BoxLayout(jp3, BoxLayout.Y_AXIS);
+        jp3.add(titl);
+        jp3.add(suggest);
+        jp3.add(suggest2);
+        jp3.setLayout(layout3);
+        jp3.add(label);
+        
+		
+		//make the actual labels 
+		//add them
+		//set layout
+		
+		setTitle("EcoTracker");
+		setSize(1000,800);
+		setVisible(true);
+		setBackground(light_green);
+		setResizable(false);
+		//set layout
+		//add action listeners
+		//add to panels
+		//set visible
+		
+	}
+	public void actionPerformed(ActionEvent event) {
+		if (stopButton != event.getSource()) {
+			if(OKButton == event.getSource()) {
+				array.add((String)foods.getSelectedItem());
+			}
+		}else {
+			stopPressed = true;
+		}
+		
+		
+		if ((array.size()> 0) && (stopPressed)) {
+			for (int i=0; i < array.size(); i++) {
+				JLabel food = new JLabel(array.get(i));
+				food.setFont(new Font("times new roman", Font.BOLD, 20));
+				jp2.add(food);
+				results = Track(array,array.get(i));
+				JLabel gas = new JLabel(results[0]);
+				JLabel two = new JLabel(results[1]);
+				JLabel three = new JLabel(results[2]);
+				jp2.add(gas);
+				jp2.add(two);
+				jp2.add(three);
+			}
+		}
+		
+		//repeat until they say stop 
+		
+		//do stuff
+	}
+	public static void main(String[]args) {
+		MainProgram mp = new MainProgram();
+		mp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+	}
+	public static String[] Track(ArrayList<String> array, String foodItem) {
+		if(foodItem .equals( "apple")) {
+			
+			results[0] = "Anual greenhouse gas emissions: 12kg";
+			results[1] = "Equivalent petro car distance: 51km";
+			results[2] = "Home heating equivalent: 2 days";
+		}else if(foodItem .equals( "avocado")) {
+			
+			results[0] = "Anual greenhouse gas emissions: 72kg";
+			results[1] = "Equivalent petro car distance: 297km";
+			results[2] = "Home heating equivalent: 11 days";
+		}else if(foodItem .equals( "banana")) {
+			
+			results[0] = "Anual greenhouse gas emissions: 25kg";
+			results[1] = "Equivalent petro car distance: 103km";
+			results[2] = "Home heating equivalent: 3 days";
+		}else if(foodItem .equals( "beans")) {
+			
+			results[0]="Anual greenhouse gas emissions: 36kg";
+			results[1]="Equivalent petro car distance: 150km";
+			results[2]="Home heating equivalent: 5 days";
+		}else if(foodItem .equals( "beef")){
+			
+			results[0]="Anual greenhouse gas emissions: 2820kg";
+			results[1]="Equivalent petro car distance: 11581km";
+			results[2]="Home heating equivalent: 447 days";
+		}else if(foodItem .equals( "berries and grape")) {
+			
+			results[0]="Anual greenhouse gas emissions: 44kg";
+			results[1]="Equivalent petro car distance: 183km";
+			results[2]="Home heating equivalent: 7 days";
+		}else if(foodItem .equals( "bread")) {
+			
+			results[0]="Anual greenhouse gas emissions: 21kg";
+			results[1]="Equivalent petro car distance: 90km";
+			results[2]="Home heating equivalent: 3 days";
+
+		}else if(foodItem .equals( "cheese")) {
+			
+			results[0]="Anual greenhouse gas emissions: 352kg";
+			results[1]="Equivalent petro car distance: 1447km";
+			results[2]="Home heating equivalent: 55 days";
+		}else if(foodItem .equals( "chicken")) {
+			
+			results[0]="Anual greenhouse gas emissions: 497kg";
+			results[1]="Equivalent petro car distance: 2044km";
+			results[2]="Home heating equivalent: 79 days";
+		}else if(foodItem .equals( "citrous fruit") ){
+			
+			results[0]="Anual greenhouse gas emissions: 11kg";
+			results[1]="Equivalent petro car distance: 47km";
+			results[2]="Home heating equivalent: 1.8 days";
+		}else if(foodItem .equals( "egg")) {
+			
+			results[0]="Anual greenhouse gas emissions: 202kg";
+			results[1]="Equivalent petro car distance: 833km";
+			results[2]="Home heating equivalent: 32 days";
+		}else if(foodItem .equals( "lamb")) {
+			
+			results[0]="Anual greenhouse gas emissions: 1582kg";
+			results[1]="Equivalent petro car distance: 6497km";
+			results[2]="Home heating equivalent: 251 days";
+		}else if(foodItem .equals( "pasta")) {
+			
+			results[0]="Anual greenhouse gas emissions: 43kg";
+			results[1]="Equivalent petro car distance: 180km";
+			results[2]="Home heating equivalent: 6 days";
+			
+		}else if(foodItem .equals( "peas")) {
+			
+			results[0]="Anual greenhouse gas emissions: 6kg";
+			results[1]="Equivalent petro car distance: 26km";
+			results[2]="Home heating equivalent: 1 days";
+		}else if(foodItem .equals( "pork")) {
+			
+			results[0]="Anual greenhouse gas emissions: 656kg";
+			results[1]="Equivalent petro car distance: 2695km";
+			results[2]="Home heating equivalent: 104 days";
+		}else if(foodItem .equals( "potatoes")) {
+			
+			results[0]="Anual greenhouse gas emissions: 16kg";
+			results[1]="Equivalent petro car distance: 69km";
+			results[2]="Home heating equivalent: 2 days";
+		}else if(foodItem .equals( "rice")) {
+			
+			results[0]="Anual greenhouse gas emissions: 121kg";
+			results[1]="Equivalent petro car distance: 499km";
+			results[2]="Home heating equivalent: 19 days";
+
+		}else if(foodItem .equals( "tomatoes")) {
+			
+			results[0]="Anual greenhouse gas emissions: 60kg";
+			results[1]="Equivalent petro car distance: 250km";
+			results[2]="Home heating equivalent: 9 days";
+		}
+		
+	return results;
+	}
+}
